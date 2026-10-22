@@ -42,6 +42,9 @@ awf replay <run_id>
 python -m awengine demo
 ```
 
+完整的使用路径、模块拆解、排错清单和演示视频分镜见
+[`MANUAL.md`](MANUAL.md)。
+
 ### 交互式 shell
 
 在终端直接运行 `awf`（或显式运行 `awf shell`）会进入交互式界面，不必反复输入
