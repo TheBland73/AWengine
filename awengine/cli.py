@@ -462,11 +462,32 @@ def _summary(state: Any, report: Path | None) -> str:
 # ----------------------------------------------------------------------
 # commands
 # ----------------------------------------------------------------------
+def _resolve_workdir(value: str, spec_path: Path) -> Path:
+    """Resolve ``--workdir`` without assuming the caller's current directory.
+
+    Shipped demos use paths such as ``fixtures/calcfix`` that live next to the
+    workflow tree.  Running ``awf`` from another directory (for example from the
+    user's home) should still work: if the path is not present relative to the
+    current directory, try the workflow directory and its parent.
+    """
+    candidate = Path(value)
+    if candidate.is_absolute():
+        return candidate.resolve()
+    direct = candidate.resolve()
+    if direct.is_dir():
+        return direct
+    for base in (spec_path.parent, spec_path.parent.parent, Path(__file__).resolve().parents[1]):
+        resolved = (base / candidate).resolve()
+        if resolved.is_dir():
+            return resolved
+    return direct
+
+
 def cmd_run(args: argparse.Namespace) -> int:
     path = _workflow_path(args.workflow, args.spec)
     spec = _apply_overrides(_load_spec(path, disable=args.disable, warn=_warn), args)
     inputs = _parse_inputs(args)
-    workdir = Path(args.workdir).resolve()
+    workdir = _resolve_workdir(args.workdir, path)
     if args.dry_run:
         print(f"workflow: {spec.name} v{spec.version}  ({path})")
         print(f"spec hash: {spec.spec_hash}")

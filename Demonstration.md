@@ -93,7 +93,7 @@ python -m pytest -q
 预期输出：
 
 ```text
-72 passed
+73 passed
 ```
 
 这一步同时验证了：依赖安装、工作流校验、沙箱执行、补丁应用、六个演示、
@@ -168,7 +168,7 @@ AWEngine 自身会在 GBK 控制台上自动把货币符号降级为 `CNY`，所
 
 把第 4 节的命令完整执行一次，确认：
 
-- `python -m pytest -q` 是 72 passed；
+- `python -m pytest -q` 是 73 passed；
 - `awf demo` 是 6/6；
 - `replay.html` 能打开，浏览器没有拦截本地文件；
 - 报告的表格、代码块、Mermaid 图和 `replay.html` 都正常显示。
@@ -238,7 +238,7 @@ python -m pytest -q
 重点讲两句：
 
 - 测试全部离线，使用录制的 LLM cassette，不需要网络和 API key；
-- `72 passed` 是后面所有演示的基线。
+- `73 passed` 是后面所有演示的基线。
 
 如果安装过程太长，可以在剪辑时加速或直接切到测试结果，不要在现场等 pip。
 
@@ -536,7 +536,7 @@ awf new my-workflow --dir .\my-workflow
 回到项目根目录，展示 README 的演示表和文档目录，最后说：
 
 > “代码、工作流、测试和文档都在 GitHub 上：TheBland73/AWengine。
-> 六个演示可以一键复现，72 个测试全部离线运行。谢谢观看。”
+> 六个演示可以一键复现，73 个测试全部离线运行。谢谢观看。”
 
 ---
 
@@ -727,7 +727,7 @@ Start-Process runs\demo\<run_id>\replay.html
 4. **给关键行留时间**：`handoff`、`verify PASS L4`、`F-VERIFY-FALSEPASS` 出现后停 1–2 秒。
 5. **鼠标不要抖**：用键盘滚动报告，或把鼠标停在目标行旁边。
 6. **字幕**：给 `L4`、`holdout`、`red-before`、`artifact` 加简短字幕，观众不需要暂停查概念。
-7. **收尾留链接**：最后一帧放 GitHub 地址和 `python -m pytest -q` 的 72 passed。
+7. **收尾留链接**：最后一帧放 GitHub 地址和 `python -m pytest -q` 的 73 passed。
 8. **不要暴露密钥**：即使是 fake 模式，也检查终端历史里没有 `API_KEY`。
 
 ---
@@ -736,7 +736,7 @@ Start-Process runs\demo\<run_id>\replay.html
 
 - [ ] `python --version` ≥ 3.11
 - [ ] `git --version` 正常
-- [ ] `python -m pytest -q` → 72 passed
+- [ ] `python -m pytest -q` → 73 passed
 - [ ] `awf demo` → 6/6
 - [ ] `runs\` 已清空，或使用新的 `runs\demo`
 - [ ] 终端字号、窗口比例、编码已调整
@@ -759,5 +759,5 @@ Start-Process runs\demo\<run_id>\replay.html
 > 交接，所有 handoff 都记录在事件日志和报告里。
 >
 > 负向演示更能说明问题：改测试会被 guard 直接拦截，可见测试通过但隐藏测试失败会被
-> 判为假通过。所有运行都可以离线复现，一条 `demo` 命令跑完六条流程，72 个测试全部
+> 判为假通过。所有运行都可以离线复现，一条 `demo` 命令跑完六条流程，73 个测试全部
 > 通过。代码在 GitHub 的 TheBland73/AWengine。”

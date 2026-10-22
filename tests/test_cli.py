@@ -1,4 +1,4 @@
-﻿"""End-to-end CLI smoke test: every documented subcommand on a real run."""
+"""End-to-end CLI smoke test: every documented subcommand on a real run."""
 
 from __future__ import annotations
 
@@ -105,6 +105,26 @@ def test_demo_subcommand_summary(tmp_path: Path) -> None:
     assert rows[0]["name"] == "hello"
     assert rows[0]["ok"] is True
     assert (tmp_path / rows[0]["run_id"] / "report.md").is_file()
+
+
+def test_relative_workdir_resolves_next_to_workflow(tmp_path: Path) -> None:
+    """Running from outside the checkout must still find demo fixtures."""
+    runs = tmp_path / "runs"
+    result = awf(
+        "run",
+        "bugfix",
+        "--fake",
+        "--cassettes",
+        str(ROOT / "tests" / "cassettes"),
+        "--workdir",
+        "fixtures/calcfix",
+        "--runs",
+        str(runs),
+        "--no-color",
+        cwd=tmp_path,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "success" in result.stdout
 
 
 def test_validate_nodes_and_new(tmp_path: Path) -> None:

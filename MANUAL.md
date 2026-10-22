@@ -1354,7 +1354,7 @@ CLI 解析参数
 | [workflows/](workflows/) | 七个示例 YAML；六条被 `awf demo` 使用 |
 | [fixtures/](fixtures/) | 演示仓库与 holdout 测试 |
 | [nodes/](nodes/) | 项目级自定义节点示例（`uppercase`） |
-| [tests/](tests/) | 72 个离线测试与 cassette |
+| [tests/](tests/) | 73 个离线测试与 cassette |
 | [scripts/](scripts/) | 录制辅助与演示脚本 |
 | [docs/](docs/) | 架构、YAML 参考、错误码、设计 |
 
@@ -1937,7 +1937,7 @@ AwfError
 python -m pytest -q
 ```
 
-当前应为 **72 passed**。CI 在 Windows 上跑 Python 3.11 和 3.13。
+当前应为 **73 passed**。CI 在 Windows 上跑 Python 3.11 和 3.13。
 
 ### 23.3 测试为什么离线
 
