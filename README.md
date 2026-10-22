@@ -16,6 +16,8 @@ LLM Agent。一次运行是否成功由**确定性验证命令 + 隐藏测试**�
 - **离线可复现**：录制的 LLM cassette 使全部演示和测试无需 API key。
 - **轻量依赖**：运行时只需要 Pydantic 与 PyYAML；OpenAI 兼容客户端是可选依赖。
 
+> 完整演示视频：[docs/media/awengine-demo.mp4](docs/media/awengine-demo.mp4)
+
 ---
 
 ## 快速开始

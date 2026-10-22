@@ -11,6 +11,8 @@
 
 > 本文以 Windows + PowerShell 为例，Python 3.11–3.13 均可。所有演示都不需要 API key。
 
+> 成品视频：[docs/media/awengine-demo.mp4](docs/media/awengine-demo.mp4)
+
 ---
 
 ## 1. 先理解 AWEngine 在演示什么
