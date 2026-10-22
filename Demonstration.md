@@ -9,9 +9,11 @@
 4. 在 8 分钟内讲清楚“流程控制、Agent 协作、可扩展性”三个重点；
 5. 用 60 秒剪出一版适合提交或发到社交平台的短片。
 
-> 本文以 Windows + PowerShell 为例，Python 3.11–3.13 均可。所有演示都不需要 API key。
+> 本文以 Windows + PowerShell 为例，Python 3.11–3.13 均可。默认的离线演示不需要 API key；真实模型接入见第 7 节。
 
 > 完整演示视频：[docs/media/awengine-demo.mp4](docs/media/awengine-demo.mp4)
+>
+> 已发布视频使用真实模型（`--live`）录制；仓库默认演示仍使用 cassette。
 
 ---
 
@@ -164,7 +166,7 @@ AWEngine 自身会在 GBK 控制台上自动把货币符号降级为 `CNY`，所
 - 关闭系统通知、聊天软件弹窗；
 - 鼠标指针放大，操作之间留 0.5–1 秒停顿；
 - 不要在画面里出现 API key、个人邮箱、真实姓名或公司内网地址；
-- 所有演示使用 `--fake` 或 `demo`，不要现场调用真实模型。
+- 建议保留一条 `--fake` 或 `demo` 的离线路径作为备份；如果视频要展示真实模型，按第 7 节设置 Key 并用 `--live`，录制时不要露出 Key。
 
 ### 3.4 先预演一遍
 
@@ -596,13 +598,13 @@ awf demo --runs runs\video
 | `--live` | 真实模型试验 | 是 | 调用 DeepSeek/OpenAI 兼容接口 |
 | `--record` | 更新 cassette | 是 | 调用真实接口并把响应写入 cassette |
 
-演示视频**只用 `--fake` 或 `demo`**。原因：
+录制时有两种选择：**默认的 `--fake` / `demo` 适合稳定备份，`--live` 适合展示真实模型调用**。已发布的视频使用 `--live`；离线路径的价值在于：
 
 - 完全离线，不依赖网络和余额；
 - 结果稳定，不会因为模型随机性导致重录；
 - cassette 与请求逐字节绑定，修改提示词后需要重新录制。
 
-如果确实要演示 live：
+如果要演示 live：
 
 ```powershell
 $env:DEEPSEEK_API_KEY = "你的 key"

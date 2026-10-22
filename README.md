@@ -15,6 +15,8 @@
 作者：[TheBland73](https://github.com/TheBland73) ｜ 版本：1.1.0 ｜ 接口：CLI / Python 包
 
 > 演示视频：[观看 AWEngine 完整演示（约 90 秒）](docs/media/awengine-demo.mp4)
+>
+> 视频使用真实模型（`--live`）录制；仓库默认的 `awf demo` 使用 cassette，便于离线复现。
 
 ---
 
