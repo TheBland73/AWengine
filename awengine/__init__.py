@@ -7,7 +7,7 @@ Library users normally only need :func:`awengine.cli.main` or the runner in
 
 from __future__ import annotations
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 SCHEMA_VERSION = 2
 
 __all__ = ["__version__", "SCHEMA_VERSION"]

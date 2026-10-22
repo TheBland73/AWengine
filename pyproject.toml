@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "awengine"
-version = "1.0.0"
+version = "1.1.0"
 description = "Agent Workflow Engine - declarative, verifiable, resumable agent workflows"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -28,6 +28,7 @@ Issues = "https://github.com/TheBland73/AWengine/issues"
 
 [project.optional-dependencies]
 llm = ["openai>=1.40,<3"]
+shell = ["prompt_toolkit>=3.0"]
 dev = ["pytest>=8"]
 
 [project.scripts]

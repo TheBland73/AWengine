@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 semantic versioning.
 
+## [1.1.0] - 2026-10-22
+
+### Added
+
+- Interactive `awf` shell with curated demo shortcuts, slash commands,
+  last-run shorthands, tab completion, persistent history, and a plain-input
+  fallback when `prompt_toolkit` is not installed.
+- `awf` with no arguments now opens the shell in a terminal; `awf shell` works
+  explicitly and remains scriptable when stdin is not a terminal.
+- Optional `shell` extra for `prompt_toolkit`.
+
 ## [1.0.0] - 2026-10-22
 
 Initial public release.

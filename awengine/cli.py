@@ -221,7 +221,11 @@ def _add_common(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="awf", description="Declarative, verifiable workflows for collaborative AI agents")
     parser.add_argument("--version", action="version", version=f"awengine {__version__}")
-    sub = parser.add_subparsers(dest="command", required=True)
+    sub = parser.add_subparsers(dest="command")
+
+    shell = sub.add_parser("shell", help="start the interactive shell")
+    shell.add_argument("--plain", action="store_true", help="use plain input instead of prompt_toolkit")
+    shell.set_defaults(func=cmd_shell)
 
     run = sub.add_parser("run", help="run a workflow")
     run.add_argument("workflow", help="workflow name or path")
@@ -764,6 +768,12 @@ def cmd_ls(args: argparse.Namespace) -> int:
     return int(ExitCode.OK)
 
 
+def cmd_shell(args: argparse.Namespace) -> int:
+    from .shell import run_shell
+
+    return run_shell(use_prompt_toolkit=False if getattr(args, "plain", False) else None)
+
+
 # ----------------------------------------------------------------------
 def _tune_console() -> None:
     """Keep legacy Windows code pages from turning a successful run into exit 3."""
@@ -786,6 +796,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     _tune_console()
     parser = build_parser()
     args = parser.parse_args(argv)
+    if not getattr(args, "command", None):
+        interactive = sys.stdin.isatty() and sys.stdout.isatty()
+        if interactive and not os.environ.get("AW_NO_SHELL"):
+            from .shell import run_shell
+
+            return run_shell()
+        parser.print_help()
+        return int(ExitCode.OK)
     try:
         return int(args.func(args))
     except AwfError as exc:
