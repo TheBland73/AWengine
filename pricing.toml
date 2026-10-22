@@ -1,0 +1,13 @@
+[pricing]
+version = "2025-01-cny"
+source = "https://api-docs.deepseek.com/quick_start/pricing"
+
+[models.deepseek-chat]
+input_per_mtok = 2.0
+output_per_mtok = 8.0
+cached_input_per_mtok = 0.5
+
+[models.deepseek-reasoner]
+input_per_mtok = 4.0
+output_per_mtok = 16.0
+cached_input_per_mtok = 1.0
