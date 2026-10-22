@@ -18,7 +18,10 @@
 
 - [Demonstration](../Demonstration.md)：录屏分镜、讲解词和演示清单；
 - [CONTRIBUTING](../CONTRIBUTING.md)：开发环境、提交规范和 PR 检查；
+- [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md)：社区行为准则；
+- [SUPPORT](../SUPPORT.md)：提问渠道、排查清单和响应范围；
 - [SECURITY](../SECURITY.md)：安全模型和漏洞报告；
+- [CITATION](../CITATION.cff)：引用元数据；
 - [CHANGELOG](../CHANGELOG.md)：版本变更。
 
 ## 按任务查找
