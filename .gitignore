@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+build/
+dist/
+.coverage
+htmlcov/
+*.log
+
+# runtime artifacts
+runs/
+*.aw/
+.lease
+
+# local scratch
+debug_*.py
+debug_*.json
+miss_*.json
+events.jsonl.tmp
