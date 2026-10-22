@@ -11,9 +11,9 @@
 
 > 本文以 Windows + PowerShell 为例，Python 3.11–3.13 均可。所有演示都不需要 API key。
 
-<video src="https://github.com/user-attachments/assets/979167b9-935d-4a1e-8ff9-fbdda1cec752" controls width="800"></video>
+[![AWEngine 演示片段](docs/media/awengine-demo.gif)](docs/media/awengine-demo.mp4)
 
-成品视频也可以[直接下载](docs/media/awengine-demo.mp4)。
+上方 GIF 在 README 中自动循环；点击可打开完整视频。完整成品也可以[直接下载](docs/media/awengine-demo.mp4)。
 
 ---
 

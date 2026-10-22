@@ -6,17 +6,17 @@
 > 写进一份可审查的 YAML，把节点执行交给 Python、子进程、内置动作或 LLM Agent；
 > 一次运行是否成功，由真实的验证命令和隐藏测试决定，而不是由模型自称完成。
 
-[![CI](https://github.com/TheBland73/AWengine/actions/workflows/ci.yml/badge.svg)](https://github.com/TheBland73/AWengine/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/TheBland73/AWengine?display_name=tag&sort=semver)](https://github.com/TheBland73/AWengine/releases)
+[![CI](https://img.shields.io/github/actions/workflow/status/TheBland73/AWengine/ci.yml?branch=main&label=CI&logo=github&cache=20261022)](https://github.com/TheBland73/AWengine/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/TheBland73/AWengine?label=release&cache=20261022)](https://github.com/TheBland73/AWengine/releases)
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-read%20the%20manual-2f6f9f.svg)](docs/README.md)
 
 作者：[TheBland73](https://github.com/TheBland73) ｜ 版本：1.1.0 ｜ 接口：CLI / Python 包
 
-<video src="https://github.com/user-attachments/assets/979167b9-935d-4a1e-8ff9-fbdda1cec752" controls width="800"></video>
+[![AWEngine 演示：三代理修复循环、验证报告与回放](docs/media/awengine-demo.gif)](docs/media/awengine-demo.mp4)
 
-<sub>如果内嵌播放器没有加载，可[直接打开视频文件](docs/media/awengine-demo.mp4)。</sub>
+<sub>上方为自动循环的演示片段；点击画面打开完整视频（含声音与操作过程）。GitHub README 不保证内嵌任意 `<video>`，因此使用可稳定显示的 GIF 预览。</sub>
 
 ---
 
