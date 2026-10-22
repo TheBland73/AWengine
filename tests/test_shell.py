@@ -12,6 +12,8 @@ def test_demo_presets_are_offline_and_complete() -> None:
         assert name in PRESETS
     assert "--fake" in PRESETS["bugfix"]
     assert "--workdir" in PRESETS["bugfix"]
+    assert PRESETS["hello"][:4] == ["run", "hello", "--fake", "--workdir"]
+    assert "-i" in PRESETS["hello"]
 
 
 def test_resolve_presets_aliases_and_slash_commands() -> None:

@@ -26,7 +26,7 @@ PROMPT = "awf> "
 
 #: Curated one-word commands for the bundled demonstrations.
 PRESETS: dict[str, list[str]] = {
-    "hello": ["run", "hello", "--fake"],
+    "hello": ["run", "hello", "--fake", "--workdir", "fixtures/calcfix", "-i", "name=world"],
     "bugfix": ["run", "bugfix", "--fake", "--workdir", "fixtures/calcfix"],
     "docsync": ["run", "docsync", "--fake", "--workdir", "fixtures/docsync"],
     "guard": ["run", "guard"],
