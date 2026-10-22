@@ -1,0 +1,58 @@
+# Guardrail demonstration: an agent tries to modify a test file.
+#
+#   plan -> cheat -> apply --(cheat detected)--> blocked
+#
+# `apply_patch` refuses protected paths before git is called.  The engine treats
+# a cheat as a deliberate hard stop (`F-STOP-EARLY`); it does not follow the
+# normal success edge and it does not execute the patch.  This is the security
+# half of the guard; `recover.yaml` demonstrates edge-based recovery for an
+# ordinary (non-cheat) apply failure.
+name: guard
+version: 1
+defaults:
+  model: deepseek-chat
+  temperature: 0.0
+
+nodes:
+  plan:
+    type: builtin
+    impl: echo
+    config:
+      value: "Demonstrate that the patch guard blocks test-file edits."
+
+  cheat:
+    type: builtin
+    impl: set
+    config:
+      values:
+        cheat:
+          diff: |
+            diff --git a/tests/test_calc.py b/tests/test_calc.py
+            --- a/tests/test_calc.py
+            +++ b/tests/test_calc.py
+            @@ -6,3 +6,3 @@
+             def test_add_positive():
+            -    assert add(2, 3) == 5
+            +    assert True
+          touched: ["tests/test_calc.py"]
+      artifacts:
+        - {id: patch, type: patch, from: cheat}
+
+  apply:
+    type: builtin
+    impl: apply_patch
+    config:
+      artifact: patch
+      reads: [patch]
+
+edges:
+  - {src: plan, dst: cheat}
+  - {src: cheat, dst: apply}
+  - {src: apply, dst: END}
+
+converge:
+  goal: "verify.passed"
+  rounds: {min: 1, max: 1}
+  steps: {min: 3, max: 6}
+  attempts: {min: 0, max: 1}
+  on_exhausted: report

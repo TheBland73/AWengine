@@ -1,0 +1,106 @@
+# A non-code three-agent workflow that is defined entirely in YAML.
+#
+#   plan -> analyst -> writer -> write -> editor -> END
+#
+# It demonstrates the inline-agent form: no Python module is needed for
+# `analyst`, `writer` or `editor`; their prompts, tools and artifacts live in
+# this file.  The deterministic verify command checks the generated NOTES.md.
+#
+# Offline:
+#   awf run docsync --fake --workdir fixtures/docsync
+name: docsync
+version: 1
+defaults:
+  model: deepseek-chat
+  temperature: 0.0
+  max_tokens: 2048
+  max_steps: 5
+
+nodes:
+  plan:
+    type: builtin
+    impl: echo
+    config:
+      value: "Write a short project note that explains AWEngine and its workflow."
+
+  analyst:
+    type: llm_agent
+    config:
+      system: |
+        You are the ANALYST in a documentation workflow.
+        Read the repository and extract the few facts a writer needs.
+        Return JSON with `brief` (one paragraph) and `facts` (a list of strings).
+      task: |
+        Inspect the working copy. Summarize what AWEngine is, how a workflow is
+        declared, and why collaboration matters. Keep the brief under 120 words.
+      tools: [read_file, search_code, list_files]
+      artifacts:
+        - {id: brief, type: brief, from: brief}
+    contract:
+      required: [brief, facts]
+      types: {brief: str, facts: list}
+
+  writer:
+    type: llm_agent
+    config:
+      system: |
+        You are the WRITER in a documentation workflow.
+        Turn the analyst brief into a concise Markdown note.
+        Return JSON with `title` and `doc` (the full Markdown text).
+      task: |
+        Using this brief, write NOTES.md:
+        $analyst.brief
+
+        The note must mention AWEngine, workflow, collaboration and agents.
+      tools: [read_file, list_files]
+      artifacts:
+        - {id: doc, type: document, from: doc}
+    contract:
+      required: [title, doc]
+      types: {title: str, doc: str}
+
+  write:
+    type: builtin
+    impl: write_file
+    config:
+      path: NOTES.md
+      content: "$writer.doc"
+      artifact: notes_file
+
+  editor:
+    type: llm_agent
+    config:
+      system: |
+        You are the EDITOR in a documentation workflow.
+        Check the produced note for missing required terms and unsupported claims.
+        Return JSON with `summary`, `issues` and `verdict`.
+      task: |
+        Review the note artifact. Report an issue only when you can quote the
+        offending text. An empty issues list means the note is ready.
+      tools: [read_file, list_files]
+      reads: [doc]
+    contract:
+      required: [summary, issues, verdict]
+      types: {summary: str, issues: list, verdict: str}
+
+edges:
+  - {src: plan, dst: analyst}
+  - {src: analyst, dst: writer}
+  - {src: writer, dst: write}
+  - {src: write, dst: editor}
+  - {src: editor, dst: END}
+
+converge:
+  goal: "verify.passed"
+  rounds: {min: 1, max: 1}
+  steps: {min: 3, max: 8}
+  attempts: {min: 0, max: 2}
+  progress: {key: "verify.passed", window: 2}
+  on_exhausted: report
+
+verify:
+  level: 4
+  cmd: "python -m pytest -q"
+  holdout: "../fixtures/holdout/test_notes_holdout.py"
+  red_before: true
+  timeout_s: 120

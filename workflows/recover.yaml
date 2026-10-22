@@ -1,0 +1,64 @@
+# Error-recovery demonstration: a failed patch is routed to a fallback node.
+#
+#   plan -> badpatch -> apply --(applied == false)--> fallback -> END
+#
+# The engine records the failed attempt, follows the failure edge, and still
+# reaches a successful goal.  This complements `guard.yaml`, where a cheat is a
+# deliberate hard stop.
+name: recover
+version: 1
+defaults:
+  model: deepseek-chat
+
+nodes:
+  plan:
+    type: builtin
+    impl: echo
+    config:
+      value: "Recover from a patch that does not apply."
+
+  badpatch:
+    type: builtin
+    impl: set
+    config:
+      values:
+        bad:
+          diff: |
+            diff --git a/calc.py b/calc.py
+            --- a/calc.py
+            +++ b/calc.py
+            @@ -1,1 +1,1 @@
+            -this context does not exist
+            +and neither does this
+          touched: ["calc.py"]
+      artifacts:
+        - {id: patch, type: patch, from: bad}
+
+  apply:
+    type: builtin
+    impl: apply_patch
+    config:
+      artifact: patch
+      reads: [patch]
+
+  fallback:
+    type: builtin
+    impl: set
+    config:
+      values:
+        recovered: true
+        message: "The patch failed to apply; the workflow took its recovery edge."
+
+edges:
+  - {src: plan, dst: badpatch}
+  - {src: badpatch, dst: apply}
+  - {src: apply, dst: fallback, when: "not apply.applied"}
+  - {src: apply, dst: END, when: "apply.applied"}
+  - {src: fallback, dst: END}
+
+converge:
+  goal: "fallback.recovered"
+  rounds: {min: 1, max: 1}
+  steps: {min: 3, max: 6}
+  attempts: {min: 1, max: 2}
+  on_exhausted: report

@@ -1,0 +1,105 @@
+# Three agents collaborate on a real defect in fixtures/calcfix:
+#
+#   plan -> coder -> apply -> review --(no blockers)--> END
+#                                \--(blockers)--> fix -> apply_fix -> review_final
+#                                                    review_final --(blockers)--> fix
+#
+# A deterministic verify command (visible + holdout tests) decides success.
+# The holdout is copied into tests_holdout/ only at verification time, so no
+# agent can read it while it is still working.
+#
+# Offline:
+#   awf run bugfix --fake --workdir fixtures/calcfix
+# Live:
+#   awf run bugfix --live --workdir fixtures/calcfix
+name: bugfix
+version: 1
+defaults:
+  model: deepseek-chat
+  temperature: 0.0
+  max_tokens: 2048
+  max_steps: 6
+
+nodes:
+  plan:
+    type: builtin
+    impl: echo
+    config:
+      value: "Fix add() in calc.py. Public tests must pass; tests are immutable."
+  coder:
+    type: llm_agent
+    impl: awengine.nodes.code.coder
+    config:
+      task: "add(a, b) returns the wrong value; make it return the sum."
+      max_steps: 4
+    contract:
+      required: [summary, patch]
+      types: {summary: str, patch: dict}
+    retry: 1
+  apply:
+    type: builtin
+    impl: apply_patch
+    config:
+      artifact: patch
+      reads: [patch]
+  review:
+    type: llm_agent
+    impl: awengine.nodes.code.reviewer
+    config:
+      max_steps: 4
+    contract:
+      required: [summary, issues, verdict, blockers]
+      types: {summary: str, issues: list, verdict: str, blockers: int}
+  fix:
+    type: llm_agent
+    impl: awengine.nodes.code.fixer
+    config:
+      max_steps: 4
+    contract:
+      required: [summary, patch]
+      types: {summary: str, patch: dict}
+  apply_fix:
+    type: builtin
+    impl: apply_patch
+    config:
+      artifact: patch
+      reads: [patch]
+  review_final:
+    type: llm_agent
+    impl: awengine.nodes.code.reviewer
+    config:
+      max_steps: 4
+    contract:
+      required: [summary, issues, verdict, blockers]
+      types: {summary: str, issues: list, verdict: str, blockers: int}
+
+edges:
+  - {src: plan, dst: coder}
+  - {src: coder, dst: apply}
+  - {src: apply, dst: review}
+  - {src: review, dst: END, when: "review.blockers == 0"}
+  - {src: review, dst: fix, when: "review.blockers > 0"}
+  - {src: fix, dst: apply_fix}
+  - {src: apply_fix, dst: review_final}
+  - {src: review_final, dst: END, when: "review_final.blockers == 0"}
+  - {src: review_final, dst: fix, when: "review_final.blockers > 0"}
+
+converge:
+  goal: "verify.passed"
+  rounds: {min: 1, max: 2}
+  steps: {min: 3, max: 12}
+  attempts: {min: 0, max: 3}
+  progress: {key: "verify.passed", window: 2}
+  escalate:
+    after_round: 1
+    model: deepseek-reasoner
+    temperature: 0.2
+    max_times: 1
+  on_exhausted: report
+
+verify:
+  level: 4
+  cmd: "python -m pytest -q"
+  holdout: "../fixtures/holdout/test_calc_holdout.py"
+  red_before: true
+  timeout_s: 120

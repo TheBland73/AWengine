@@ -1,0 +1,49 @@
+# Minimal end-to-end demo: deterministic plan -> one LLM agent -> deterministic wrap.
+# Offline (recorded cassette):
+#   awf run hello --fake
+# Live (needs DEEPSEEK_API_KEY):
+#   awf run hello --live
+name: hello
+version: 1
+defaults:
+  model: deepseek-chat
+  temperature: 0.0
+  max_tokens: 512
+
+nodes:
+  plan:
+    type: builtin
+    impl: echo
+    config:
+      value: "Write one friendly greeting for the world."
+  greet:
+    type: llm_agent
+    impl: awengine.nodes.code.greeter
+    config:
+      name: world
+    contract:
+      required: [greeting, words]
+      types: {greeting: str, words: int}
+    retry: 1
+  wrap:
+    type: builtin
+    impl: set
+    config:
+      values:
+        summary: "Greeting produced and recorded."
+      artifacts:
+        - id: greeting
+          type: text
+          from: summary
+
+edges:
+  - {src: plan, dst: greet}
+  - {src: greet, dst: wrap}
+  - {src: wrap, dst: END}
+
+converge:
+  goal: "greet.words >= 1"
+  rounds: {min: 1, max: 1}
+  steps: {min: 1, max: 6}
+  attempts: {min: 0, max: 3}
+  progress: {key: "greet.words", window: 2}
