@@ -63,6 +63,9 @@ python -m awengine demo
 `guard` 与 `falsepass` 是刻意失败的负向用例。`awf demo` 将它们视为预期结果并以
 0 退出；单独运行时会按运行结果返回退出码 1。
 
+完整的安装步骤、八分钟录屏脚本、六十秒短片版本和讲解词见
+[`Demonstration.md`](Demonstration.md)。
+
 ### 三 Agent 修复循环
 
 `workflows/bugfix.yaml` 定义了 coder、reviewer、fixer 三个 Agent：
