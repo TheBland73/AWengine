@@ -25,7 +25,7 @@ LLM Agent。一次运行是否成功由**确定性验证命令 + 隐藏测试**�
 ```powershell
 git clone https://github.com/TheBland73/AWengine.git
 cd AWengine
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,shell]"
 
 # 运行全部离线演示并生成报告
 awf demo
@@ -41,6 +41,31 @@ awf replay <run_id>
 ```powershell
 python -m awengine demo
 ```
+
+### 交互式 shell
+
+在终端直接运行 `awf`（或显式运行 `awf shell`）会进入交互式界面，不必反复输入
+`python -m awengine`：
+
+```text
+$ awf
+awengine 1.1.0  interactive shell
+project  D:\work\AWengine
+runs     runs  (0 runs)
+model    offline: recorded cassettes
+type `help` for commands, `quit` to exit
+
+awf> bugfix
+awf> show last
+awf> demo --only guard
+awf> quit
+```
+
+`bugfix`、`hello`、`docsync`、`guard`、`falsepass`、`recover` 是一键演示命令；
+`show`、`report`、`replay`、`explain` 省略 run id 时自动使用最近一次运行。所有命令
+也支持 `/run`、`/demo` 这样的斜杠写法，并可用 Tab 补全；安装 `.[shell]` 后
+`prompt_toolkit` 提供历史记录、补全和底部提示栏，未安装时自动退化为普通输入。
+交互式命令与 `awf run ...` 完全等价，脚本和 CI 使用非交互形式即可。
 
 演示默认写入 `runs/`。每次运行都会生成 `state.json`、`events.jsonl`、
 `report.md`、`summary.json`、Mermaid 图和单文件 `replay.html`。
@@ -148,6 +173,7 @@ verify:
 
 | 命令 | 作用 |
 |---|---|
+| `awf` / `awf shell` | 打开交互式 shell |
 | `awf demo [--only NAME] [--json]` | 运行六条离线演示并生成报告 |
 | `awf validate <workflow> [--graph]` | 校验 YAML；可输出 Mermaid |
 | `awf run <workflow>` | 运行工作流（`--fake` / `--live` / `--record`） |
@@ -257,7 +283,7 @@ runs/<run_id>/
 ## 开发
 
 ```powershell
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,shell]"
 python -m pytest -q
 ```
 
@@ -279,6 +305,7 @@ python scripts/record_demo.py
 awengine/
   awengine/                # 引擎包
     cli.py                 # 命令行入口
+    shell.py               # 交互式 shell（薄适配层）
     engine.py              # 调度、路由、重试、收敛
     spec.py loader.py      # YAML 模型与静态校验
     expr.py                # 安全表达式求值
@@ -309,7 +336,7 @@ awengine/
 - 沙箱是目录副本而非容器，`process` 节点能访问宿主文件系统，只应运行可信代码；
 - 成本价格来自静态 `pricing.toml`，供应商调价后需要手动更新；
 - cassette 与请求内容逐字节绑定，修改 Agent 提示词后需要重新录制；
-- 未实现交互式 REPL、多进程并行调度和 pass@k 评估框架；
+- 未实现多进程并行调度和 pass@k 评估框架；
 - `--live` 需要 `DEEPSEEK_API_KEY` 或 `OPENAI_API_KEY`，否则自动降级为离线模式。
 
 架构与取舍见 [`docs/architecture.md`](docs/architecture.md) 和

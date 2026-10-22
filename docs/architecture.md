@@ -4,7 +4,9 @@
 
 ```mermaid
 flowchart LR
-    User[用户] -->|awf run / resume / show| CLI[cli.py]
+    User[用户] -->|awf| Shell[shell.py]
+    Shell -->|argv| CLI[cli.py]
+    User -->|awf run / resume / show| CLI
     CLI --> Loader[loader.py + spec.py]
     CLI --> Engine[engine.py]
     Engine --> State[state.py + checkpoint.py]
@@ -40,12 +42,18 @@ review 已解决的问题，因此“发现问题 → 修复 → 复审通过”
 ## 2. 分层与依赖方向
 
 ```text
+shell (interactive adapter) -> cli
 cli -> loader/spec/expr
 cli -> engine
 engine -> state/checkpoint/contracts/guard/budget/events
 engine -> nodes runtime -> llm/executor
 engine -> trace
 ```
+
+The shell translates a line into the same argv consumed by `cli.main`; all
+validation, run, report and resume behaviour lives in the CLI and engine, not in
+the shell. `tests/test_shell.py` covers command rewriting and the loop without a
+terminal.
 
 约束由 `tests/test_layering.py` 用 AST 扫描守护：
 

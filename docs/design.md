@@ -20,13 +20,14 @@ AWEngine is built around four properties:
 4. **Reproducibility.** Recorded provider responses allow the full demo and test
    suite to run offline and produce stable results.
 
-Non-goals for this release are an interactive REPL, multi-process scheduling,
-container isolation, and a benchmark/evaluation framework.
+Non-goals for this release are multi-process scheduling, container isolation,
+and a benchmark/evaluation framework. A thin interactive shell wraps the normal
+CLI; it does not introduce a second orchestration path.
 
 ## 2. Layers
 
 ```text
-CLI / library API
+CLI (+ interactive shell adapter) / library API
         |
         v
 loader + spec + expression evaluator

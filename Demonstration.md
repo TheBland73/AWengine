@@ -81,7 +81,7 @@ source .venv/bin/activate
 
 ```powershell
 python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,shell]"
 ```
 
 ### 2.5 自检
@@ -93,7 +93,7 @@ python -m pytest -q
 预期输出：
 
 ```text
-65 passed
+72 passed
 ```
 
 这一步同时验证了：依赖安装、工作流校验、沙箱执行、补丁应用、六个演示、
@@ -102,7 +102,7 @@ CLI、检查点和报告生成。**如果这一步不绿，不要开始录屏。
 再跑一次一键演示：
 
 ```powershell
-python -m awengine demo
+awf demo
 ```
 
 预期结尾：
@@ -110,6 +110,23 @@ python -m awengine demo
 ```text
 summary: 6/6 demos matched expectations
 ```
+
+### 2.6 交互式 shell（可选镜头）
+
+在终端直接输入 `awf`（或 `awf shell`）即可进入交互式界面，适合展示“少敲命令”：
+
+```text
+$ awf
+awf> bugfix
+awf> show last
+awf> demo --only guard
+awf> quit
+```
+
+`bugfix`、`hello`、`docsync`、`guard`、`falsepass`、`recover` 是一键演示；
+`show`、`report`、`replay`、`explain` 省略 run id 时自动使用最近一次运行。安装
+`.[shell]` 后支持 Tab 补全、历史记录和底部提示栏；未安装时会退化为普通输入，
+所有功能仍然可用。
 
 ---
 
@@ -121,7 +138,7 @@ summary: 6/6 demos matched expectations
 Remove-Item -Recurse -Force runs -ErrorAction SilentlyContinue
 ```
 
-这样视频里 `python -m awengine ls` 只会出现本次演示的记录。
+这样视频里 `awf ls` 只会出现本次演示的记录。
 
 ### 3.2 固定终端编码
 
@@ -151,8 +168,8 @@ AWEngine 自身会在 GBK 控制台上自动把货币符号降级为 `CNY`，所
 
 把第 4 节的命令完整执行一次，确认：
 
-- `python -m pytest -q` 是 65 passed；
-- `python -m awengine demo` 是 6/6；
+- `python -m pytest -q` 是 72 passed；
+- `awf demo` 是 6/6；
 - `replay.html` 能打开，浏览器没有拦截本地文件；
 - 报告的表格、代码块、Mermaid 图和 `replay.html` 都正常显示。
 
@@ -185,7 +202,7 @@ AWEngine 自身会在 GBK 控制台上自动把货币符号降级为 `CNY`，所
 然后输入：
 
 ```powershell
-python -m awengine demo
+awf demo
 ```
 
 先让观众看到六条演示的最终结果，但不要逐条解释：
@@ -214,21 +231,21 @@ git clone https://github.com/TheBland73/AWengine.git
 cd AWengine
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,shell]"
 python -m pytest -q
 ```
 
 重点讲两句：
 
 - 测试全部离线，使用录制的 LLM cassette，不需要网络和 API key；
-- `65 passed` 是后面所有演示的基线。
+- `72 passed` 是后面所有演示的基线。
 
 如果安装过程太长，可以在剪辑时加速或直接切到测试结果，不要在现场等 pip。
 
 ### 4.3 hello：最小工作流（1:30–2:30）
 
 ```powershell
-python -m awengine run hello --fake --workdir fixtures\calcfix --cassettes tests\cassettes -i name=world --runs runs\demo
+awf run hello --fake --workdir fixtures\calcfix --cassettes tests\cassettes -i name=world --runs runs\demo
 ```
 
 预期结尾：
@@ -254,7 +271,7 @@ plan -> greet -> wrap
 $run = Get-ChildItem runs\demo -Directory -Filter '*-hello' |
     Sort-Object LastWriteTime -Descending |
     Select-Object -First 1 -ExpandProperty Name
-python -m awengine show $run --runs runs\demo
+awf show $run --runs runs\demo
 ```
 
 画面重点：`history`、`artifacts`、`messages` 三段。对于 hello，messages 可能为空，
@@ -269,7 +286,7 @@ python -m awengine show $run --runs runs\demo
 这是整段视频的核心，建议给足时间。
 
 ```powershell
-python -m awengine run bugfix --fake --workdir fixtures\calcfix --cassettes tests\cassettes --runs runs\demo
+awf run bugfix --fake --workdir fixtures\calcfix --cassettes tests\cassettes --runs runs\demo
 ```
 
 预期结尾：
@@ -309,7 +326,7 @@ rounds 1, steps 7, attempts 0, cost CNY 0.0082
 $run = Get-ChildItem runs\demo -Directory -Filter '*-bugfix' |
     Sort-Object LastWriteTime -Descending |
     Select-Object -First 1 -ExpandProperty Name
-python -m awengine show $run --runs runs\demo
+awf show $run --runs runs\demo
 ```
 
 指出三处：
@@ -350,7 +367,7 @@ Start-Process $report
 最后打开 replay：
 
 ```powershell
-python -m awengine replay $run --runs runs\demo --open
+awf replay $run --runs runs\demo --open
 ```
 
 浏览器里：
@@ -370,7 +387,7 @@ python -m awengine replay $run --runs runs\demo --open
 先讲 guard：
 
 ```powershell
-python -m awengine run guard --fake --workdir fixtures\calcfix --cassettes tests\cassettes --runs runs\demo
+awf run guard --fake --workdir fixtures\calcfix --cassettes tests\cassettes --runs runs\demo
 ```
 
 预期：
@@ -397,7 +414,7 @@ stop blocked/cheat (F-STOP-EARLY)
 再讲 falsepass：
 
 ```powershell
-python -m awengine run falsepass --fake --workdir fixtures\falsepass --cassettes tests\cassettes --runs runs\demo
+awf run falsepass --fake --workdir fixtures\falsepass --cassettes tests\cassettes --runs runs\demo
 ```
 
 预期：
@@ -425,7 +442,7 @@ reason: verify_failed
 ### 4.6 recover：失败后的条件恢复（6:00–6:45）
 
 ```powershell
-python -m awengine run recover --fake --workdir fixtures\calcfix --cassettes tests\cassettes --runs runs\demo
+awf run recover --fake --workdir fixtures\calcfix --cassettes tests\cassettes --runs runs\demo
 ```
 
 预期：
@@ -451,7 +468,7 @@ rounds 1, steps 4, attempts 1, cost CNY 0
 $run = Get-ChildItem runs\demo -Directory -Filter '*-recover' |
     Sort-Object LastWriteTime -Descending |
     Select-Object -First 1 -ExpandProperty Name
-python -m awengine show $run --runs runs\demo
+awf show $run --runs runs\demo
 ```
 
 旁白：
@@ -479,7 +496,7 @@ nodes:
 然后运行：
 
 ```powershell
-python -m awengine run docsync --fake --workdir fixtures\docsync --cassettes tests\cassettes --runs runs\demo
+awf run docsync --fake --workdir fixtures\docsync --cassettes tests\cassettes --runs runs\demo
 ```
 
 预期：
@@ -499,8 +516,8 @@ rounds 1, steps 5, attempts 0, cost CNY 0.0053
 再展示两个扩展入口：
 
 ```powershell
-python -m awengine nodes
-python -m awengine validate workflows\bugfix.yaml
+awf nodes
+awf validate workflows\bugfix.yaml
 ```
 
 `awf nodes` 会列出可发现的节点：内置动作、项目内 Python 节点和 LLM Agent。
@@ -509,7 +526,7 @@ python -m awengine validate workflows\bugfix.yaml
 如果还有 20 秒，补一句：
 
 ```powershell
-python -m awengine new my-workflow --dir .\my-workflow
+awf new my-workflow --dir .\my-workflow
 ```
 
 说明脚手架会生成工作流、节点、测试和 README，业务节点不需要改引擎。
@@ -519,7 +536,7 @@ python -m awengine new my-workflow --dir .\my-workflow
 回到项目根目录，展示 README 的演示表和文档目录，最后说：
 
 > “代码、工作流、测试和文档都在 GitHub 上：TheBland73/AWengine。
-> 六个演示可以一键复现，65 个测试全部离线运行。谢谢观看。”
+> 六个演示可以一键复现，72 个测试全部离线运行。谢谢观看。”
 
 ---
 
@@ -539,7 +556,7 @@ python -m awengine new my-workflow --dir .\my-workflow
 提前准备：
 
 ```powershell
-python -m awengine demo --runs runs\video
+awf demo --runs runs\video
 ```
 
 录制时只需要打开 `runs\video\<run_id>\report.md` 和 `replay.html`，不要现场等待。
@@ -550,22 +567,22 @@ python -m awengine demo --runs runs\video
 
 | 目的 | 命令 |
 |---|---|
-| 跑六条演示 | `python -m awengine demo --runs runs\demo` |
-| 只跑一条演示 | `python -m awengine demo --only bugfix --runs runs\demo` |
-| 手动运行工作流 | `python -m awengine run bugfix --fake --workdir fixtures\calcfix --cassettes tests\cassettes --runs runs\demo` |
-| 查看状态 | `python -m awengine show <run_id> --runs runs\demo` |
-| 解释为什么停止 | `python -m awengine explain <run_id> --runs runs\demo` |
-| 重新生成报告 | `python -m awengine report <run_id> --runs runs\demo` |
-| 打开回放 | `python -m awengine replay <run_id> --runs runs\demo --open` |
-| 打印事件 | `python -m awengine trace <run_id> --runs runs\demo --events 20` |
-| 列出运行 | `python -m awengine ls --runs runs\demo` |
-| 校验工作流 | `python -m awengine validate workflows\bugfix.yaml` |
-| 查看 Mermaid 图 | `python -m awengine validate workflows\bugfix.yaml --graph` |
-| 列出节点 | `python -m awengine nodes` |
-| 生成脚手架 | `python -m awengine new my-workflow --dir .\my-workflow` |
+| 跑六条演示 | `awf demo --runs runs\demo` |
+| 只跑一条演示 | `awf demo --only bugfix --runs runs\demo` |
+| 手动运行工作流 | `awf run bugfix --fake --workdir fixtures\calcfix --cassettes tests\cassettes --runs runs\demo` |
+| 查看状态 | `awf show <run_id> --runs runs\demo` |
+| 解释为什么停止 | `awf explain <run_id> --runs runs\demo` |
+| 重新生成报告 | `awf report <run_id> --runs runs\demo` |
+| 打开回放 | `awf replay <run_id> --runs runs\demo --open` |
+| 打印事件 | `awf trace <run_id> --runs runs\demo --events 20` |
+| 列出运行 | `awf ls --runs runs\demo` |
+| 校验工作流 | `awf validate workflows\bugfix.yaml` |
+| 查看 Mermaid 图 | `awf validate workflows\bugfix.yaml --graph` |
+| 列出节点 | `awf nodes` |
+| 生成脚手架 | `awf new my-workflow --dir .\my-workflow` |
 
-`awf` 是安装后的等价入口，例如 `awf demo` 等于 `python -m awengine demo`。录屏时用
-`python -m awengine` 更稳，不依赖 PATH。
+`awf` 是安装后的入口，直接输入即可，例如 `awf demo`。若 PATH 未生效，可以用
+`python -m awengine ...` 作为等价备用；录屏时优先用更简洁的 `awf`。
 
 ---
 
@@ -587,7 +604,7 @@ python -m awengine demo --runs runs\video
 
 ```powershell
 $env:DEEPSEEK_API_KEY = "你的 key"
-python -m awengine run hello --live --workdir fixtures\calcfix --runs runs\live
+awf run hello --live --workdir fixtures\calcfix --runs runs\live
 ```
 
 不要在录屏中展示 key；录完关闭终端或清除环境变量。
@@ -649,7 +666,7 @@ cassette 记录了当时的仓库文件列表和提示词，换一个 workdir �
 在项目根目录重新安装开发依赖：
 
 ```powershell
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,shell]"
 ```
 
 如果使用虚拟环境，确认终端提示符前面有 `(.venv)`。
@@ -674,7 +691,7 @@ chcp 65001
 - `falsepass`：`blocked/verify_failed`，`F-VERIFY-FALSEPASS`；
 - 普通工作流没有达到 goal 或验证失败。
 
-用 `python -m awengine explain <run_id>` 查看原因和修复建议。
+用 `awf explain <run_id>` 查看原因和修复建议。
 
 ### 9.5 `git apply` 失败
 
@@ -689,7 +706,7 @@ chcp 65001
 `--runs runs\demo`：
 
 ```powershell
-python -m awengine ls --runs runs\demo
+awf ls --runs runs\demo
 ```
 
 ### 9.7 浏览器没有打开 replay
@@ -710,7 +727,7 @@ Start-Process runs\demo\<run_id>\replay.html
 4. **给关键行留时间**：`handoff`、`verify PASS L4`、`F-VERIFY-FALSEPASS` 出现后停 1–2 秒。
 5. **鼠标不要抖**：用键盘滚动报告，或把鼠标停在目标行旁边。
 6. **字幕**：给 `L4`、`holdout`、`red-before`、`artifact` 加简短字幕，观众不需要暂停查概念。
-7. **收尾留链接**：最后一帧放 GitHub 地址和 `python -m pytest -q` 的 65 passed。
+7. **收尾留链接**：最后一帧放 GitHub 地址和 `python -m pytest -q` 的 72 passed。
 8. **不要暴露密钥**：即使是 fake 模式，也检查终端历史里没有 `API_KEY`。
 
 ---
@@ -719,8 +736,8 @@ Start-Process runs\demo\<run_id>\replay.html
 
 - [ ] `python --version` ≥ 3.11
 - [ ] `git --version` 正常
-- [ ] `python -m pytest -q` → 65 passed
-- [ ] `python -m awengine demo` → 6/6
+- [ ] `python -m pytest -q` → 72 passed
+- [ ] `awf demo` → 6/6
 - [ ] `runs\` 已清空，或使用新的 `runs\demo`
 - [ ] 终端字号、窗口比例、编码已调整
 - [ ] `replay.html` 可以打开
@@ -742,5 +759,5 @@ Start-Process runs\demo\<run_id>\replay.html
 > 交接，所有 handoff 都记录在事件日志和报告里。
 >
 > 负向演示更能说明问题：改测试会被 guard 直接拦截，可见测试通过但隐藏测试失败会被
-> 判为假通过。所有运行都可以离线复现，一条 `demo` 命令跑完六条流程，65 个测试全部
+> 判为假通过。所有运行都可以离线复现，一条 `demo` 命令跑完六条流程，72 个测试全部
 > 通过。代码在 GitHub 的 TheBland73/AWengine。”
