@@ -14,9 +14,7 @@
 
 作者：[TheBland73](https://github.com/TheBland73) ｜ 版本：1.1.0 ｜ 接口：CLI / Python 包
 
-[![AWEngine 演示：三代理修复循环、验证报告与回放](docs/media/awengine-demo.gif)](docs/media/awengine-demo.mp4)
-
-<sub>上方为自动循环的演示片段；点击画面打开完整视频（含声音与操作过程）。GitHub README 不保证内嵌任意 `<video>`，因此使用可稳定显示的 GIF 预览。</sub>
+> 演示视频：[观看 AWEngine 完整演示（约 90 秒）](docs/media/awengine-demo.mp4)
 
 ---
 
