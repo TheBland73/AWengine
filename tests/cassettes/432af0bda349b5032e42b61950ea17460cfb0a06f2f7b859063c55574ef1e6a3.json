@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "key": "432af0bda349b5032e42b61950ea17460cfb0a06f2f7b859063c55574ef1e6a3",
+  "request": {
+    "model": "deepseek-chat",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are the WRITER in a documentation workflow.\nTurn the analyst brief into a concise Markdown note.\nReturn JSON with `title` and `doc` (the full Markdown text)."
+      },
+      {
+        "role": "user",
+        "content": "## Repository map\nFiles in the working copy:\n- tests/test_notes.py (320 bytes)\n\n## History\nRecent rounds:\n- round 1 plan [ok] Write a short project note that explains AWEngine and its workflow.\n- round 1 analyst [ok] {\"_agent\": \"analyst\", \"brief\": \"AWEngine is a YAML-declared workflow engine for collaborative agents. A workflow lists nodes and edges; the engine passes typed artifacts and control signals between agents. Collaboration matters because discovery, implementation and review are separate responsibilities.\", \"facts\": [\"workflows are declared in YAML\", \"agents exchange typed artifacts\", \"the engine owns verification and convergence\"]}\n\n## Current task\nUsing this brief, write NOTES.md:\n$analyst.brief\n\nThe note must mention AWEngine, workflow, collaboration and agents."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "read_file",
+          "description": "Read a UTF-8 text file from the sandboxed workdir.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "path relative to the workdir"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "list_files",
+          "description": "List files under the workdir (excluding caches and .git).",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "glob": {
+                "type": "string",
+                "default": "**/*"
+              }
+            },
+            "required": []
+          }
+        }
+      }
+    ],
+    "temperature": 0.0,
+    "max_tokens": 2048
+  },
+  "response": {
+    "text": "{\"title\": \"AWEngine at a glance\", \"doc\": \"# AWEngine at a glance\\n\\nAWEngine is a small workflow engine for collaborative agents. A workflow is declared in YAML and the engine moves typed artifacts between its nodes.\\n\\n## Collaboration\\n\\nThe analyst, writer and editor are separate agents. Each one owns a different responsibility, so a later agent can inspect the earlier agent's work instead of silently trusting it.\\n\\n## Verification\\n\\nThe engine, not an agent, runs the verify command and decides whether the workflow passed its goal.\\n\"}",
+    "tool_calls": [],
+    "usage": {
+      "model": "fake",
+      "prompt_tokens": 410,
+      "completion_tokens": 180,
+      "cached_tokens": 0,
+      "calls": 1,
+      "latency_ms": 0,
+      "cost": "0"
+    },
+    "model": "fake"
+  }
+}

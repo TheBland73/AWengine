@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "key": "bd45eb9c5de87ce1acd395cb4ce37ba1151f8f2669d30584a73d913397053ac9",
+  "request": {
+    "model": "deepseek-chat",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are the ANALYST in a documentation workflow.\nRead the repository and extract the few facts a writer needs.\nReturn JSON with `brief` (one paragraph) and `facts` (a list of strings)."
+      },
+      {
+        "role": "user",
+        "content": "## Repository map\nFiles in the working copy:\n- tests/test_notes.py (320 bytes)\n\n## History\nRecent rounds:\n- round 1 plan [ok] Write a short project note that explains AWEngine and its workflow.\n\n## Current task\nInspect the working copy. Summarize what AWEngine is, how a workflow is\ndeclared, and why collaboration matters. Keep the brief under 120 words."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "read_file",
+          "description": "Read a UTF-8 text file from the sandboxed workdir.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "path relative to the workdir"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "search_code",
+          "description": "Search the workdir with a Python regular expression.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string"
+              },
+              "glob": {
+                "type": "string",
+                "default": "**/*.py"
+              }
+            },
+            "required": [
+              "pattern"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "list_files",
+          "description": "List files under the workdir (excluding caches and .git).",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "glob": {
+                "type": "string",
+                "default": "**/*"
+              }
+            },
+            "required": []
+          }
+        }
+      }
+    ],
+    "temperature": 0.0,
+    "max_tokens": 2048
+  },
+  "response": {
+    "text": "{\"brief\": \"AWEngine is a YAML-declared workflow engine for collaborative agents. A workflow lists nodes and edges; the engine passes typed artifacts and control signals between agents. Collaboration matters because discovery, implementation and review are separate responsibilities.\", \"facts\": [\"workflows are declared in YAML\", \"agents exchange typed artifacts\", \"the engine owns verification and convergence\"]}",
+    "tool_calls": [],
+    "usage": {
+      "model": "fake",
+      "prompt_tokens": 360,
+      "completion_tokens": 150,
+      "cached_tokens": 0,
+      "calls": 1,
+      "latency_ms": 0,
+      "cost": "0"
+    },
+    "model": "fake"
+  }
+}

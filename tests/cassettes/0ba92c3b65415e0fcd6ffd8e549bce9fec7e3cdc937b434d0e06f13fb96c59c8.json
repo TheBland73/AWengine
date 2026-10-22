@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "key": "0ba92c3b65415e0fcd6ffd8e549bce9fec7e3cdc937b434d0e06f13fb96c59c8",
+  "request": {
+    "model": "deepseek-chat",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a friendly greeter used to smoke-test an agent workflow.\nReturn one JSON object and nothing else:\n{\"greeting\": \"one friendly sentence\", \"words\": <word count>}"
+      },
+      {
+        "role": "user",
+        "content": "## Repository map\nFiles in the working copy:\n- calc.py (176 bytes)\n- README.md (281 bytes)\n- tests/test_calc.py (214 bytes)\n\n## History\nRecent rounds:\n- round 1 plan [ok] Write one friendly greeting for the world.\n\n## Current task\nGreet world in one short sentence. Return the JSON object."
+      }
+    ],
+    "tools": [],
+    "temperature": 0.0,
+    "max_tokens": 512
+  },
+  "response": {
+    "text": "{\"greeting\": \"Hello, world!\", \"words\": 2}",
+    "tool_calls": [],
+    "usage": {
+      "model": "fake",
+      "prompt_tokens": 90,
+      "completion_tokens": 20,
+      "cached_tokens": 0,
+      "calls": 1,
+      "latency_ms": 0,
+      "cost": "0"
+    },
+    "model": "fake"
+  }
+}

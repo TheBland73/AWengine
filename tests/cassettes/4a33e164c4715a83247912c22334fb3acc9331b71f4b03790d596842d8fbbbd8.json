@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "key": "4a33e164c4715a83247912c22334fb3acc9331b71f4b03790d596842d8fbbbd8",
+  "request": {
+    "model": "deepseek-chat",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are the EDITOR in a documentation workflow.\nCheck the produced note for missing required terms and unsupported claims.\nReturn JSON with `summary`, `issues` and `verdict`."
+      },
+      {
+        "role": "user",
+        "content": "## Repository map\nFiles in the working copy:\n- NOTES.md (11 bytes)\n- tests/test_notes.py (320 bytes)\n\n## History\nOlder rounds (summarised):\n- round 1 plan [ok] Write a short project note that explains AWEngine and its workflow.\n- round 1 analyst [ok] {\"_agent\": \"analyst\", \"brief\": \"AWEngine is a YAML-declared workflow engine for collaborative agents. A workflow lists nodes and edges; the engine passes typed artifacts and control signals between...\nRecent rounds:\n- round 1 writer [ok] {\"_agent\": \"writer\", \"doc\": \"# AWEngine at a glance\\n\\nAWEngine is a small workflow engine for collaborative agents. A workflow is declared in YAML and the engine moves typed artifacts between its nodes.\\n\\n## Collaboration\\n\\nThe analyst, writer and editor are separate agents. Each one owns a different responsibility, so a later agent can inspect the earlier agent's work instead of silently trusting it.\\n\\n## Verification\\n\\nThe engine, not an agent, runs the verify command and decides whether the workflow passed its goal.\\n\", \"title\": \"AWEngine at a glance\"}\n- round 1 write [ok] {\"bytes\": 11, \"path\": \"NOTES.md\"}\n\n## Available artifacts\n- doc: {\"value\":\"# AWEngine at a glance\\n\\nAWEngine is a small workflow engine for collaborative agents. A workflow is declared in YAML and the engine moves typed artifacts between its nodes.\\n\\n## Collaboration\\n\\nThe analyst, writer and editor are separate agents. Each one owns a different responsibility, so a later agent can inspect the earlier agent's work instead of silently trusting it.\\n\\n## Verification\\n\\nThe engine, not an agent, runs the verify command and decides whether the workflow passed its goal.\\n\"}\n\n## Current task\nReview the note artifact. Report an issue only when you can quote the\noffending text. An empty issues list means the note is ready."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "read_file",
+          "description": "Read a UTF-8 text file from the sandboxed workdir.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "path relative to the workdir"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "list_files",
+          "description": "List files under the workdir (excluding caches and .git).",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "glob": {
+                "type": "string",
+                "default": "**/*"
+              }
+            },
+            "required": []
+          }
+        }
+      }
+    ],
+    "temperature": 0.0,
+    "max_tokens": 2048
+  },
+  "response": {
+    "text": "{\"summary\": \"The note contains all required terms and has no unsupported claims.\", \"issues\": [], \"verdict\": \"ready\"}",
+    "tool_calls": [],
+    "usage": {
+      "model": "fake",
+      "prompt_tokens": 300,
+      "completion_tokens": 60,
+      "cached_tokens": 0,
+      "calls": 1,
+      "latency_ms": 0,
+      "cost": "0"
+    },
+    "model": "fake"
+  }
+}

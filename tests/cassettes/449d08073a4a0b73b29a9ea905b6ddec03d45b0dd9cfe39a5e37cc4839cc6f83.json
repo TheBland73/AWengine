@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "key": "449d08073a4a0b73b29a9ea905b6ddec03d45b0dd9cfe39a5e37cc4839cc6f83",
+  "request": {
+    "model": "deepseek-chat",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are the CODER in a code-review workflow.\nYou work inside a disposable copy of a repository. Your job is to make the\nproject's public tests pass without touching the tests themselves.\n\nRules:\n- Read the relevant files before proposing a change.\n- Return ONE unified diff that git can apply from the repository root, with\n  `diff --git a/<path> b/<path>`, `--- a/<path>`, `+++ b/<path>` headers.\n- Never modify tests, conftest.py, pytest.ini or verify scripts.\n- Keep the change minimal and explain it in one or two sentences.\n- You may run pytest to check your hypothesis, but the diff is the deliverable.\n\nReturn a single JSON object:\n{\n  \"summary\": \"one-line description\",\n  \"patch\": {\n    \"diff\": \"diff --git a/file.py b/file.py\\n--- a/file.py\\n+++ b/file.py\\n@@ ...\",\n    \"rationale\": \"why this fixes the bug\",\n    \"touched\": [\"file.py\"]\n  }\n}"
+      },
+      {
+        "role": "user",
+        "content": "## Repository map\nFiles in the working copy:\n- calc.py (176 bytes)\n- README.md (281 bytes)\n- tests/test_calc.py (214 bytes)\n\n## History\nRecent rounds:\n- round 1 plan [ok] Fix add() in calc.py. Public tests must pass; tests are immutable.\n\n## Current task\nadd(a, b) returns the wrong value; make it return the sum."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "read_file",
+          "description": "Read a UTF-8 text file from the sandboxed workdir.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "path relative to the workdir"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "search_code",
+          "description": "Search the workdir with a Python regular expression.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string"
+              },
+              "glob": {
+                "type": "string",
+                "default": "**/*.py"
+              }
+            },
+            "required": [
+              "pattern"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "list_files",
+          "description": "List files under the workdir (excluding caches and .git).",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "glob": {
+                "type": "string",
+                "default": "**/*"
+              }
+            },
+            "required": []
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "run_cmd",
+          "description": "Run a whitelisted command (pytest/python/node) inside the workdir.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              },
+              "timeout": {
+                "type": "integer",
+                "default": 60
+              }
+            },
+            "required": [
+              "command"
+            ]
+          }
+        }
+      }
+    ],
+    "temperature": 0.0,
+    "max_tokens": 2048
+  },
+  "response": {
+    "text": "{\"summary\": \"add() returned a - b; return the sum instead.\", \"patch\": {\"diff\": \"diff --git a/calc.py b/calc.py\\n--- a/calc.py\\n+++ b/calc.py\\n@@ -6,2 +6,2 @@\\n def add(a, b):\\n-    return a - b\\n+    return a + b\\n\", \"rationale\": \"The public test expects 2 + 3 == 5.\", \"touched\": [\"calc.py\"]}}",
+    "tool_calls": [],
+    "usage": {
+      "model": "fake",
+      "prompt_tokens": 420,
+      "completion_tokens": 120,
+      "cached_tokens": 0,
+      "calls": 1,
+      "latency_ms": 0,
+      "cost": "0"
+    },
+    "model": "fake"
+  }
+}

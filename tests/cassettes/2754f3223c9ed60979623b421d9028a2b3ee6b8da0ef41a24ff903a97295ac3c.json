@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "key": "2754f3223c9ed60979623b421d9028a2b3ee6b8da0ef41a24ff903a97295ac3c",
+  "request": {
+    "model": "deepseek-chat",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are the REVIEWER in a code-review workflow.\nYou only inspect code and report defects. You never edit files and you never\ndeclare success; a deterministic verify command decides that.\n\nEvery issue MUST carry concrete evidence (path, line, exact quote). If you\ncannot quote the code that motivates an issue, do not report it.\n\nSeverity:\n- blocker: the code is wrong or a public test must fail because of it\n- major: a real defect that may not be covered by tests\n- minor: style or maintainability\n\nReturn a single JSON object:\n{\n  \"summary\": \"one paragraph\",\n  \"issues\": [\n    {\n      \"severity\": \"blocker\",\n      \"file\": \"calc.py\",\n      \"line\": 4,\n      \"message\": \"add() subtracts instead of adding\",\n      \"evidence\": [{\"path\": \"calc.py\", \"line\": 4, \"quote\": \"return a - b\"}],\n      \"suggestion\": \"return a + b\"\n    }\n  ]\n}\nAn empty issues list means you found no defects."
+      },
+      {
+        "role": "user",
+        "content": "## Repository map\nFiles in the working copy:\n- calc.py (176 bytes)\n- README.md (281 bytes)\n- tests/test_calc.py (214 bytes)\n\n## History\nOlder rounds (summarised):\n- round 1 plan [ok] Fix add() in calc.py. Public tests must pass; tests are immutable.\n- round 1 coder [ok] add() returned a - b; return the sum instead.\n- round 1 apply [ok] {\"applied\": true, \"artifact\": \"patch\", \"digest\": \"030f698ee98a7abec17fbc840cac7cb436ba1e85f68256659dd99338d4988866\", \"touched\": [\"calc.py\"]}\n- round 1 review [ok] add() is fixed, but mul() still returns a + b, so the public test_mul must fail. The coder stopped after the first defect.\nRecent rounds:\n- round 1 fix [ok] Fixed R1-1: mul() added its arguments instead of multiplying.\n- round 1 apply_fix [ok] {\"applied\": true, \"artifact\": \"patch\", \"digest\": \"492f95881eb8c83c2c271be63435472587108ec958bd71ee8c5532a33d75f1a1\", \"touched\": [\"calc.py\"]}\n\n## Available artifacts\n- patch: {\"diff\":\"diff --git a/calc.py b/calc.py\\n--- a/calc.py\\n+++ b/calc.py\\n@@ -10,2 +10,2 @@\\n def mul(a, b):\\n-    return a + b\\n+    return a * b\\n\",\"rationale\":\"test_mul expects 3 * 4 == 12 and the holdout expects -2 * 5 == -10.\",\"touched\":[\"calc.py\"]}\n\n## Current task\nReview the working copy in the current directory for the task: $task\n\nRead the changed files (start with the patch digest in the context, then open\nthe files). Report only evidenced defects. Return the JSON object."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "read_file",
+          "description": "Read a UTF-8 text file from the sandboxed workdir.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "path relative to the workdir"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "search_code",
+          "description": "Search the workdir with a Python regular expression.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string"
+              },
+              "glob": {
+                "type": "string",
+                "default": "**/*.py"
+              }
+            },
+            "required": [
+              "pattern"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "list_files",
+          "description": "List files under the workdir (excluding caches and .git).",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "glob": {
+                "type": "string",
+                "default": "**/*"
+              }
+            },
+            "required": []
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "run_cmd",
+          "description": "Run a whitelisted command (pytest/python/node) inside the workdir.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              },
+              "timeout": {
+                "type": "integer",
+                "default": 60
+              }
+            },
+            "required": [
+              "command"
+            ]
+          }
+        }
+      }
+    ],
+    "temperature": 0.0,
+    "max_tokens": 2048
+  },
+  "response": {
+    "text": "{\"summary\": \"Both add() and mul() now match their contracts; no issues remain.\", \"issues\": []}",
+    "tool_calls": [],
+    "usage": {
+      "model": "fake",
+      "prompt_tokens": 620,
+      "completion_tokens": 70,
+      "cached_tokens": 0,
+      "calls": 1,
+      "latency_ms": 0,
+      "cost": "0"
+    },
+    "model": "fake"
+  }
+}
