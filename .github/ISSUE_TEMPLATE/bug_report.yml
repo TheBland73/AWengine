@@ -1,0 +1,71 @@
+name: Bug report
+description: Report a reproducible bug in AWEngine.
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please remove API keys,
+        private code, and personal data before submitting.
+
+        For usage questions, use Discussions instead. For security issues, follow
+        SECURITY.md and do not open a public issue.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect instead?
+      placeholder: A concise description of the problem.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: AWEngine version
+      description: Output of `awf --version` or the commit hash.
+      placeholder: "1.1.0"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, and whether you used the shell extra.
+      placeholder: "Windows 11, Python 3.13.9, shell extra installed"
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: The exact command, including `--fake`, `--live`, or `--record`.
+      render: shell
+      placeholder: python -m awengine run bugfix --fake --workdir fixtures/calcfix
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal workflow
+      description: Paste the smallest YAML and fixture that reproduces the issue.
+      render: yaml
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and report excerpt
+      description: Include the exit code and relevant lines from report.md or events.jsonl.
+      render: text
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and discussions.
+          required: true
+        - label: I removed credentials, private code, and personal data.
+          required: true

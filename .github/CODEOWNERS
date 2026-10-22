@@ -1,0 +1,6 @@
+# Default owner for all paths. Keep this file in sync with the maintainer list.
+* @TheBland73
+
+/docs/ @TheBland73
+/.github/ @TheBland73
+/awengine/shell.py @TheBland73

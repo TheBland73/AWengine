@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use AWEngine in academic work or a public project, please cite this repository."
+title: AWEngine
+abstract: "A declarative, verifiable, and resumable workflow engine for collaborative AI agents."
+authors:
+  - name: "TheBland73"
+    website: "https://github.com/TheBland73"
+version: 1.1.0
+date-released: 2026-10-22
+license: MIT
+repository-code: "https://github.com/TheBland73/AWengine"
+url: "https://github.com/TheBland73/AWengine"
+keywords:
+  - ai-agents
+  - workflow-engine
+  - orchestration
+  - verification
+  - llm
+  - yaml

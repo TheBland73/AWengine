@@ -1,0 +1,54 @@
+name: Feature request
+description: Suggest a capability, workflow, or documentation improvement.
+title: "[feat]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the problem before the solution. Small, composable
+        proposals are easier to review than broad rewrites.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that is currently hard or impossible?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior, YAML shape, or CLI change you would like.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What workarounds or other designs did you consider?
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Workflow YAML / expressions
+        - CLI / shell
+        - Node runtimes / tools
+        - Verification / convergence
+        - Observability / reports
+        - Documentation / examples
+        - Packaging / CI
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues, discussions, and the roadmap.
+          required: true
+        - label: This request is not a security report.
+          required: true
