@@ -37,7 +37,7 @@ Issues = "https://github.com/TheBland73/AWengine/issues"
 Changelog = "https://github.com/TheBland73/AWengine/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
-llm = ["openai>=1.40,<3"]
+llm = ["openai>=1.40,<4"]
 shell = ["prompt_toolkit>=3.0"]
 dev = ["pytest>=8"]
 
