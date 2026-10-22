@@ -17,6 +17,7 @@ jobs:
   test:
     name: Python ${{ matrix.python-version }}
     runs-on: windows-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -39,6 +40,9 @@ jobs:
 
       - name: Compile
         run: python -m compileall -q awengine
+
+      - name: Dependency check
+        run: python -m pip check
 
       - name: Test
         run: python -m pytest -q

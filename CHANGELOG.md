@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 semantic versioning.
 
+## [Unreleased]
+
+### Changed
+
+- Rewrote the README as a user-facing guide with a complete CLI reference,
+  workflow cookbook, troubleshooting table, and maintainer section.
+- Added a documentation index, support policy, citation metadata, issue forms,
+  pull-request template, Dependabot configuration, and an automated release
+  workflow.
+- Expanded package metadata and CI quality checks.
+
 ## [1.1.0] - 2026-10-22
 
 ### Added
